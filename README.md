@@ -75,3 +75,13 @@ On the switch run:
     OS10(conf-if-ma-1/1/1)# ip address 192.168.1.20/24
     OS10(conf-if-ma-1/1/1)# no shutdown
     OS10(conf-if-ma-1/1/1)# exit
+
+### Configure OpenFlow Controller
+
+    OS10# configure terminal
+    OS10(config)# openflow
+    OS10(config-openflow)# switch of-switch-1
+    OS10(config-openflow-switch)# controller ipv4 <YOUR_CONTROLLER_IP> port 6633
+    OS10(config-openflow-switch)# no shutdown
+
+# Testing the Setup
