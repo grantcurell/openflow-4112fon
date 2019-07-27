@@ -16,3 +16,5 @@ app/pip-selfcheck\.json
 app/Include/site/python3\.7/greenlet/greenlet\.h
 
 \.vscode/settings\.json
+
+app/__pycache__/
