@@ -9,7 +9,8 @@
 # My Configuration
 
 - Controller is running RHEL 8
-- I used a S4112F-ON
+- I am using a S4112F-ON
+- I am using a Ryu OpenFlow controller
 
 ## Switch Version Info
 
@@ -85,3 +86,9 @@ On the switch run:
     OS10(config-openflow-switch)# no shutdown
 
 # Testing the Setup
+
+# Noted Limitations
+
+- The Dell switches do not support the FLOOD port type which limits their functionality as a switch
+- IN_PORT is not supported so you have to program around figuring out the ingress port
+- The version of OS10 I have does not support the `debug openflow` command
