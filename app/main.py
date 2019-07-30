@@ -15,6 +15,7 @@ from ryu.controller.handler import set_ev_cls
 from ryu.ofproto import ofproto_v1_3
 from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
+from pprint import PrettyPrinter
 
 
 class ExampleSwitch13(app_manager.RyuApp):
@@ -37,6 +38,7 @@ class ExampleSwitch13(app_manager.RyuApp):
         match = parser.OFPMatch()
         actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER,
                                           ofproto.OFPCML_NO_BUFFER)]
+        self.remove_all_flows(datapath)
         self.add_flow(datapath, 0, match, actions)
 
 
@@ -52,12 +54,34 @@ class ExampleSwitch13(app_manager.RyuApp):
         datapath.send_msg(mod)
 
 
+    def remove_all_flows(self, datapath):
+        ofproto = datapath.ofproto
+        parser = datapath.ofproto_parser
+
+        actions = [parser.OFPFlowMod]
+
+        match = datapath.ofproto_parser.OFPMatch()
+        mod = datapath.ofproto_parser.OFPFlowMod(datapath, 0, 0, datapath.ofproto.OFPTT_ALL,
+                                         datapath.ofproto.OFPFC_DELETE,
+                                         0, 0, 0, 0xffffffff,
+                                         datapath.ofproto.OFPP_ANY,
+                                         datapath.ofproto.OFPG_ANY,
+                                         0, match, [])
+
+        datapath.send_msg(mod)
+
+
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
         msg = ev.msg
+        # TODO remove when done
+        pp = PrettyPrinter(indent=4)
+        pp.pprint(msg)
         datapath = msg.datapath
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
+
+        pp.pprint("DATAPATH" + datapath)
 
         # get Datapath ID to identify OpenFlow switches.
         dpid = datapath.id
@@ -69,10 +93,12 @@ class ExampleSwitch13(app_manager.RyuApp):
         dst = eth_pkt.dst
         src = eth_pkt.src
 
+        pp.pprint(eth_pkt)
+
         # get the received port number from packet_in message.
         in_port = msg.match['in_port']
 
-        self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+        self.logger.info("packet in %s %s %s", dpid, src, dst)
 
         # learn a mac address to avoid FLOOD next time.
         self.mac_to_port[dpid][src] = in_port
@@ -82,7 +108,17 @@ class ExampleSwitch13(app_manager.RyuApp):
         if dst in self.mac_to_port[dpid]:
             out_port = self.mac_to_port[dpid][dst]
         else:
+            # TODO this isn't supported on the Dell switches
             out_port = ofproto.OFPP_FLOOD
+
+        pp.pprint("self.mac_to_port type: " + str(type(self.mac_to_port)))
+        self.mac_to_port[dpid]["00:0c:29:7a:62:1a"] = 2
+        #out_port = self.mac_to_port[dpid]["00:0c:29:7a:62:1a"]
+        out_port = ofproto.OFPP_FLOOD
+        out_port = 2
+
+        print("mac_to_port: " + str(self.mac_to_port))
+        pp.pprint(in_port)
 
         # construct action list.
         actions = [parser.OFPActionOutput(out_port)]
@@ -97,4 +133,6 @@ class ExampleSwitch13(app_manager.RyuApp):
                                   buffer_id=ofproto.OFP_NO_BUFFER,
                                   in_port=in_port, actions=actions,
                                   data=msg.data)
+
+        pp.pprint("Out is: " + str(out))
         datapath.send_msg(out)

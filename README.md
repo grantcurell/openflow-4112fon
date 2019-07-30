@@ -73,7 +73,7 @@ On the switch run:
 ### Configure Out of Band Management Interface
 
     OS10(conf-if-ma-1/1/1)# interface mgmt 1/1/1
-    OS10(conf-if-ma-1/1/1)# ip address 192.168.1.20/24
+    OS10(conf-if-ma-1/1/1)# ip address <YOUR_CONTROLLER_IP>/24
     OS10(conf-if-ma-1/1/1)# no shutdown
     OS10(conf-if-ma-1/1/1)# exit
 
@@ -92,3 +92,4 @@ On the switch run:
 - The Dell switches do not support the FLOOD port type which limits their functionality as a switch
 - IN_PORT is not supported so you have to program around figuring out the ingress port
 - The version of OS10 I have does not support the `debug openflow` command
+- The version of OS10 I have does not support any OpenFlow show commands beyond `show openflow flows` and `show openflow switch`
