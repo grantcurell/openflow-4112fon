@@ -11,17 +11,7 @@
 - Controller is running RHEL 8
 - I am using a S4112F-ON
 - I am using a Ryu OpenFlow controller
-
-## Switch Version Info
-
-    OS10# show version
-    Dell EMC Networking OS10-Enterprise
-    Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved.
-    OS Version: 10.4.2.2
-    Build Version: 10.4.2.2.265
-    Build Time: 2019-01-14T15:15:14-0800
-    System Type: S4112F-ON
-    Architecture: x86_64
+- OpenSwitch version PKGS_OPX-3.2.0-installer-x86_64
 
 ## RHEL Release Info
 
@@ -68,14 +58,34 @@ On the switch run:
     OS10(config-openflow)# mode openflow-only
     Configurations not relevant to openflow mode will be removed from the startup-configuration and system will be rebooted. Do you want to proceed? [confirm yes/no]:yes
 
-## Configure OpenFlow
+## Setup the Switch
+
+**WARNING**: At the time of writing the documentation on OpenSwitch's site is out of date. Many of the commands listed do not work.
+
+### ONIE Boot Switch
+
+To find the installer, ONIE will use an automated discovery process. It will use DHCP to discover a DNS server and that DNS server must have a record called onie-server which points to a web server or TFTP server hosting the installation media. It expects the file on the web server to be called onie-installer.
+
+1. Download [the operating system](https://archive.openswitch.net/installers/stable/Dell-EMC/PKGS_OPX-3.2.0-installer-x86_64.bin)
+2. Host the file on a web server of your choosing
+3. Add a symlink for the file called "onie-installer".
+4. On your DNS server add a record for onie-server pointing to your web server.
+
 
 ### Configure Out of Band Management Interface
 
-    OS10(conf-if-ma-1/1/1)# interface mgmt 1/1/1
-    OS10(conf-if-ma-1/1/1)# ip address <YOUR_CONTROLLER_IP>/24
-    OS10(conf-if-ma-1/1/1)# no shutdown
-    OS10(conf-if-ma-1/1/1)# exit
+1. On the switch, edit the file `/etc/network/interfaces.d/eth0` as root
+2. Add:
+
+        auto eth0
+        allow-hotplug eth0
+        iface eth0 inet static
+          address <YOUR_IP>/<YOUR_CIDR_NETMASK>
+          gateway <YOUR_GATEWAY>
+          nameserver <YOUR_DNS_SERVER>
+
+3. Run `sudo systemctl restart networking`
+   1. Note: One of the things I noticed is the official documentation still references `service`. On my system everything was `systemd`.
 
 ### Configure OpenFlow Controller
 
