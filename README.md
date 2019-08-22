@@ -14,14 +14,14 @@
 
 ## Switch Version Info
 
-Dell EMC Networking OS10-Enterprise
-Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved.
-OS Version: 10.4.3.4
-Build Version: 10.4.3.4.213
-Build Time: 2019-06-10T09:54:17-0700
-System Type: S4112F-ON
-Architecture: x86_64
-Up Time: 04:58:21
+    Dell EMC Networking OS10-Enterprise
+    Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved.
+    OS Version: 10.4.3.4
+    Build Version: 10.4.3.4.213
+    Build Time: 2019-06-10T09:54:17-0700
+    System Type: S4112F-ON
+    Architecture: x86_64
+    Up Time: 04:58:21
 
 
 ## RHEL Release Info
