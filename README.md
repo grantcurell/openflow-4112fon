@@ -8,20 +8,21 @@
 
 # My Configuration
 
-- Controller is running RHEL 8
+- Controller is running on Windows in PyCharm while I'm testing. I'll move it to RHEL when I'm done.
 - I am using a S4112F-ON
 - I am using a Ryu OpenFlow controller
 
 ## Switch Version Info
 
-    OS10# show version
-    Dell EMC Networking OS10-Enterprise
-    Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved.
-    OS Version: 10.4.2.2
-    Build Version: 10.4.2.2.265
-    Build Time: 2019-01-14T15:15:14-0800
-    System Type: S4112F-ON
-    Architecture: x86_64
+Dell EMC Networking OS10-Enterprise
+Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved.
+OS Version: 10.4.3.4
+Build Version: 10.4.3.4.213
+Build Time: 2019-06-10T09:54:17-0700
+System Type: S4112F-ON
+Architecture: x86_64
+Up Time: 04:58:21
+
 
 ## RHEL Release Info
 
@@ -84,12 +85,3 @@ On the switch run:
     OS10(config-openflow)# switch of-switch-1
     OS10(config-openflow-switch)# controller ipv4 <YOUR_CONTROLLER_IP> port 6633
     OS10(config-openflow-switch)# no shutdown
-
-# Testing the Setup
-
-# Noted Limitations
-
-- The Dell switches do not support the FLOOD port type which limits their functionality as a switch
-- IN_PORT is not supported so you have to program around figuring out the ingress port
-- The version of OS10 I have does not support the `debug openflow` command
-- The version of OS10 I have does not support any OpenFlow show commands beyond `show openflow flows` and `show openflow switch`
